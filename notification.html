@@ -1,0 +1,3701 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TAHMID JOD - Notification Center</title>
+
+<style>
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0
+}
+
+:root{
+ --bg:#020617;
+ --card:rgba(15,23,42,.9);
+ --border:rgba(255,255,255,.09);
+ --text:#f8fafc;
+ --muted:#94a3b8;
+ --blue:#dc2626;
+ --purple:#7c3aed;
+ --green:#22c55e;
+ --red:#ef4444;
+ --yellow:#f59e0b
+}
+
+html{
+ scroll-behavior:smooth
+}
+
+body{
+ font-family:Arial,sans-serif;
+ background:radial-gradient(circle at top,#450a0a,#020617 55%);
+ color:var(--text);
+ min-height:100vh;
+ padding:15px
+}
+
+.container{
+ max-width:850px;
+ margin:auto
+}
+
+.header{
+ text-align:center;
+ margin:8px 0 18px
+}
+
+.logo{
+ width:72px;
+ height:72px;
+ border-radius:20px;
+ object-fit:cover;
+ border:2px solid rgba(255,255,255,.15);
+ margin-bottom:10px
+}
+
+.header h1{
+ font-size:23px
+}
+
+.header p{
+ font-size:12px;
+ color:var(--muted);
+ margin-top:5px
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:8px;
+ margin-bottom:12px
+}
+
+.stat{
+ background:rgba(15,23,42,.75);
+ border:1px solid var(--border);
+ border-radius:16px;
+ padding:12px;
+ text-align:center
+}
+
+.stat b{
+ display:block;
+ font-size:20px
+}
+
+.stat span{
+ font-size:10px;
+ color:var(--muted)
+}
+
+.card{
+ background:var(--card);
+ border:1px solid var(--border);
+ border-radius:22px;
+ padding:18px;
+ box-shadow:0 20px 60px rgba(0,0,0,.35);
+ margin-bottom:13px
+}
+
+.section-title{
+ font-size:15px;
+ font-weight:bold;
+ margin-bottom:12px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px
+}
+
+.group{
+ margin-bottom:16px
+}
+
+label{
+ display:block;
+ font-size:12px;
+ font-weight:bold;
+ color:#cbd5e1;
+ margin-bottom:7px
+}
+
+input,
+textarea,
+select{
+ width:100%;
+ border:1px solid #334155;
+ background:#020617;
+ color:white;
+ border-radius:13px;
+ padding:12px;
+ outline:none;
+ font-family:inherit;
+ transition:.18s
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+ border-color:#3b82f6;
+ box-shadow:0 0 0 2px rgba(59,130,246,.08)
+}
+
+textarea{
+ min-height:110px;
+ resize:vertical
+}
+
+input[readonly]{
+ opacity:.85
+}
+
+.row{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px
+}
+
+button{
+ border:0;
+ border-radius:13px;
+ padding:12px;
+ font-weight:bold;
+ color:white;
+ cursor:pointer;
+ background:linear-gradient(135deg,var(--blue),var(--purple));
+ transition:.18s
+}
+
+button:active{
+ transform:scale(.98)
+}
+
+button:disabled{
+ opacity:.55;
+ cursor:not-allowed;
+ transform:none
+}
+
+.btn-secondary{
+ background:#334155
+}
+
+.btn-green{
+ background:linear-gradient(135deg,#16a34a,#059669)
+}
+
+.btn-red{
+ background:linear-gradient(135deg,#dc2626,#991b1b)
+}
+
+.btn-yellow{
+ background:linear-gradient(135deg,#d97706,#b45309)
+}
+
+.small-btn{
+ padding:9px 10px;
+ font-size:11px
+}
+
+.targets{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px
+}
+
+.target{
+ border:1px solid #334155;
+ background:#020617;
+ border-radius:14px;
+ padding:12px;
+ cursor:pointer
+}
+
+.target input{
+ width:auto;
+ margin-right:6px
+}
+
+.target span{
+ font-size:12px
+}
+
+#specificBox{
+ display:none;
+ margin-top:10px
+}
+
+.specific-actions{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ margin-top:8px
+}
+
+.template-top{
+ display:grid;
+ grid-template-columns:1fr auto;
+ gap:8px;
+ margin-bottom:8px
+}
+
+.favorite-btn{
+ width:45px;
+ background:#334155;
+ font-size:19px;
+ padding:8px
+}
+
+.favorite-btn.active{
+ background:#92400e;
+ color:#facc15
+}
+
+.template-fields{
+ display:none
+}
+
+.template-fields.show{
+ display:block
+}
+
+.field{
+ margin-bottom:9px
+}
+
+.message-tools{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-top:6px;
+ font-size:10px;
+ color:var(--muted)
+}
+
+.preview{
+ background:#000;
+ border-radius:20px;
+ padding:14px;
+ max-width:390px;
+ margin:auto;
+ border:1px solid #1e293b
+}
+
+.phone-head{
+ display:flex;
+ align-items:center;
+ gap:8px;
+ margin-bottom:10px;
+ color:#94a3b8;
+ font-size:10px
+}
+
+.phone-head img{
+ width:20px;
+ height:20px;
+ border-radius:6px
+}
+
+.notification-preview{
+ background:#1e293b;
+ border-radius:14px;
+ padding:12px
+}
+
+.preview-top{
+ display:flex;
+ gap:9px
+}
+
+.preview-icon{
+ width:38px;
+ height:38px;
+ border-radius:10px;
+ object-fit:cover;
+ background:#334155
+}
+
+.preview-title{
+ font-size:13px;
+ font-weight:bold
+}
+
+.preview-time{
+ font-size:9px;
+ color:#94a3b8;
+ margin-left:5px
+}
+
+.preview-msg{
+ font-size:12px;
+ line-height:1.45;
+ color:#cbd5e1;
+ margin-top:5px;
+ white-space:pre-wrap;
+ word-break:break-word
+}
+
+.preview-image{
+ width:100%;
+ max-height:160px;
+ object-fit:cover;
+ border-radius:10px;
+ margin-top:9px;
+ display:none
+}
+
+.status{
+ padding:11px;
+ border-radius:12px;
+ font-size:12px;
+ display:none;
+ margin-top:10px;
+ white-space:pre-wrap;
+ word-break:break-word
+}
+
+.status.show{
+ display:block
+}
+
+.status.success{
+ background:rgba(34,197,94,.12);
+ color:#86efac;
+ border:1px solid rgba(34,197,94,.3)
+}
+
+.status.error{
+ background:rgba(239,68,68,.12);
+ color:#fca5a5;
+ border:1px solid rgba(239,68,68,.3)
+}
+
+.status.info{
+ background:rgba(59,130,246,.12);
+ color:#93c5fd;
+ border:1px solid rgba(59,130,246,.3)
+}
+
+.progress{
+ display:none;
+ margin:12px 0
+}
+
+.progress.show{
+ display:block
+}
+
+.progress-track{
+ height:7px;
+ background:#1e293b;
+ border-radius:99px;
+ overflow:hidden
+}
+
+.progress-bar{
+ height:100%;
+ width:0%;
+ border-radius:99px;
+ background:linear-gradient(90deg,#2563eb,#7c3aed);
+ transition:.3s
+}
+
+.progress-text{
+ font-size:11px;
+ color:#94a3b8;
+ margin-top:6px;
+ text-align:center
+}
+
+.send-mode{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ margin-bottom:10px
+}
+
+.mode{
+ padding:11px;
+ border:1px solid #334155;
+ background:#020617;
+ border-radius:12px;
+ text-align:center;
+ cursor:pointer;
+ font-size:12px
+}
+
+.mode.active{
+ border-color:#3b82f6;
+ background:rgba(37,99,235,.12)
+}
+
+.schedule-box{
+ display:none;
+ margin-top:10px
+}
+
+.schedule-box.show{
+ display:block
+}
+
+.schedule-note{
+ margin-top:8px;
+ padding:10px;
+ border-radius:10px;
+ background:rgba(37,99,235,.08);
+ border:1px solid rgba(59,130,246,.18);
+ color:#93c5fd;
+ font-size:10px;
+ line-height:1.5
+}
+
+/* HISTORY */
+
+.history-toggle-wrap{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px
+}
+
+.history-count-badge{
+ min-width:20px;
+ height:20px;
+ padding:0 6px;
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ border-radius:20px;
+ background:rgba(59,130,246,.15);
+ color:#93c5fd;
+ font-size:9px;
+ margin-left:4px
+}
+
+.history-panel{
+ display:none;
+ margin-top:13px
+}
+
+.history-panel.show{
+ display:block
+}
+
+.history-tools{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ margin-bottom:10px
+}
+
+.history{
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+ max-height:500px;
+ overflow:auto
+}
+
+.history-item{
+ background:#020617;
+ border:1px solid #1e293b;
+ border-radius:14px;
+ padding:11px
+}
+
+.history-main{
+ display:flex;
+ justify-content:space-between;
+ gap:8px
+}
+
+.history-title{
+ font-size:12px;
+ font-weight:bold
+}
+
+.history-meta{
+ font-size:10px;
+ color:#94a3b8;
+ margin-top:4px
+}
+
+.history-msg{
+ font-size:11px;
+ color:#cbd5e1;
+ margin-top:7px;
+ white-space:nowrap;
+ overflow:hidden;
+ text-overflow:ellipsis
+}
+
+.history-actions{
+ display:flex;
+ gap:5px;
+ margin-top:8px
+}
+
+.history-actions button{
+ flex:1;
+ padding:8px;
+ font-size:10px
+}
+
+.badge{
+ display:inline-block;
+ padding:4px 7px;
+ border-radius:20px;
+ font-size:9px;
+ white-space:nowrap
+}
+
+.badge.success{
+ background:rgba(34,197,94,.13);
+ color:#86efac
+}
+
+.badge.failed{
+ background:rgba(239,68,68,.13);
+ color:#fca5a5
+}
+
+.badge.scheduled{
+ background:rgba(245,158,11,.13);
+ color:#fcd34d
+}
+
+.empty{
+ text-align:center;
+ color:#64748b;
+ font-size:12px;
+ padding:25px
+}
+
+.popup{
+ position:fixed;
+ left:50%;
+ bottom:20px;
+ transform:translate(-50%,120px);
+ background:#0f172a;
+ border:1px solid rgba(255,255,255,.12);
+ box-shadow:0 15px 40px rgba(0,0,0,.5);
+ border-radius:16px;
+ padding:13px 17px;
+ min-width:260px;
+ max-width:90%;
+ text-align:center;
+ font-size:12px;
+ z-index:9999;
+ opacity:0;
+ transition:.3s
+}
+
+.popup.show{
+ transform:translate(-50%,0);
+ opacity:1
+}
+
+.popup.success{
+ border-color:rgba(34,197,94,.4)
+}
+
+.popup.error{
+ border-color:rgba(239,68,68,.4)
+}
+
+.footer{
+ text-align:center;
+ color:#475569;
+ font-size:10px;
+ margin:12px
+}
+
+@media(max-width:600px){
+
+ body{
+  padding:10px
+ }
+
+ .card{
+  padding:14px;
+  border-radius:18px
+ }
+
+ .row{
+  grid-template-columns:1fr
+ }
+
+ .targets{
+  grid-template-columns:1fr
+ }
+
+ .history-tools{
+  grid-template-columns:1fr
+ }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+
+<div class="header">
+
+<img
+ class="logo"
+ src="https://videotourl.com/images/1791731746074-18b920d8-818a-422d-98b7-941333ef35c9.jpg"
+ alt="TAHMID JOD"
+>
+
+<h1>TAHMID JOD</h1>
+
+<p>Premium Notification Management Center</p>
+
+</div>
+
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="stat">
+<b id="todaySent">0</b>
+<span>Today Sent</span>
+</div>
+
+<div class="stat">
+<b id="scheduledCount">0</b>
+<span>Scheduled</span>
+</div>
+
+<div class="stat">
+<b id="historyCount">0</b>
+<span>History</span>
+</div>
+
+</div>
+
+
+<!-- TARGET -->
+
+<div class="card">
+
+<div class="section-title">
+👥 Notification Target
+</div>
+
+<div class="targets">
+
+<label class="target">
+<input
+ type="radio"
+ name="target"
+ value="all"
+ checked
+>
+<span>All Users</span>
+</label>
+
+<label class="target">
+<input
+ type="radio"
+ name="target"
+ value="specific"
+>
+<span>Specific User</span>
+</label>
+
+</div>
+
+<div id="specificBox">
+
+<label>Firebase UID / External ID</label>
+
+<div style="display:grid;grid-template-columns:1fr auto;gap:7px">
+
+<input
+ id="externalId"
+ type="text"
+ placeholder="Enter Firebase UID"
+ autocomplete="off"
+>
+
+<button
+ type="button"
+ id="pasteUidBtn"
+ class="btn-secondary"
+>
+📋 PASTE
+</button>
+
+</div>
+
+<div class="specific-actions">
+
+<button
+ type="button"
+ id="checkUserBtn"
+ class="btn-secondary"
+>
+CHECK USER
+</button>
+
+<button
+ type="button"
+ id="clearUserBtn"
+ class="btn-secondary"
+>
+CLEAR
+</button>
+
+</div>
+
+<div
+ id="userStatus"
+ class="status"
+></div>
+
+</div>
+
+</div>
+
+
+<!-- TEMPLATE -->
+
+<div class="card">
+
+<div class="section-title">
+📝 Notification Template
+</div>
+
+<div class="template-top">
+
+<input
+ id="templateSearch"
+ type="search"
+ placeholder="🔍 Search templates..."
+>
+
+<button
+ id="favoriteBtn"
+ class="favorite-btn"
+ title="Favorite"
+ type="button"
+>
+☆
+</button>
+
+</div>
+
+<select id="template"></select>
+
+<div
+ id="templateFields"
+ class="template-fields group"
+></div>
+
+</div>
+
+
+<!-- MESSAGE -->
+
+<div class="card">
+
+<div class="section-title">
+
+<span>✏️ Message</span>
+
+<button
+ id="resetBtn"
+ class="btn-secondary small-btn"
+ type="button"
+>
+RESET
+</button>
+
+</div>
+
+<label>Notification Title</label>
+
+<input
+ id="title"
+ type="text"
+ value="TAHMID JOD"
+ readonly
+ maxlength="150"
+>
+
+<div style="height:10px"></div>
+
+<textarea
+ id="message"
+ placeholder="Template select করলে message তৈরি হবে..."
+ maxlength="1000"
+></textarea>
+
+<div class="message-tools">
+
+<span>Custom message edit করা যাবে</span>
+
+<span>
+<b id="charCount">0</b>/1000
+</span>
+
+</div>
+
+</div>
+
+
+<!-- DETAILS -->
+
+<div class="card">
+
+<div class="section-title">
+🎮 Notification Details
+</div>
+
+<div class="row">
+
+<div class="group">
+
+<label>Icon URL</label>
+
+<input
+ id="icon"
+ type="url"
+ value="https://videotourl.com/images/1791731746074-18b920d8-818a-422d-98b7-941333ef35c9.jpg"
+>
+
+</div>
+
+<div class="group">
+
+<label>Big Image URL</label>
+
+<input
+ id="image"
+ type="url"
+ placeholder="https://example.com/image.jpg"
+>
+
+</div>
+
+</div>
+
+<div class="group">
+
+<label>Click URL</label>
+
+<input
+ id="url"
+ type="url"
+ value="https://tahmid-jod.web.app"
+>
+
+</div>
+
+</div>
+
+
+<!-- PREVIEW -->
+
+<div class="card">
+
+<div class="section-title">
+
+<span>👀 Live Notification Preview</span>
+
+<span style="font-size:10px;color:#64748b">
+LIVE
+</span>
+
+</div>
+
+<div class="preview">
+
+<div class="phone-head">
+
+<img
+ id="previewSmallIcon"
+ src="https://videotourl.com/images/1791731746074-18b920d8-818a-422d-98b7-941333ef35c9.jpg"
+>
+
+<span>Now • TAHMID JOD</span>
+
+</div>
+
+<div class="notification-preview">
+
+<div class="preview-top">
+
+<img
+ id="previewIcon"
+ class="preview-icon"
+ src="https://videotourl.com/images/1791731746074-18b920d8-818a-422d-98b7-941333ef35c9.jpg"
+>
+
+<div style="flex:1">
+
+<div>
+
+<span
+ id="previewTitle"
+ class="preview-title"
+>
+TAHMID JOD
+</span>
+
+<span class="preview-time">
+now
+</span>
+
+</div>
+
+<div
+ id="previewMessage"
+ class="preview-msg"
+>
+আপনার notification message এখানে দেখা যাবে।
+</div>
+
+</div>
+
+</div>
+
+<img
+ id="previewImage"
+ class="preview-image"
+>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- SEND -->
+
+<div class="card">
+
+<div class="section-title">
+📤 Send Notification
+</div>
+
+<div class="send-mode">
+
+<div
+ class="mode active"
+ data-mode="now"
+>
+⚡ Send Now
+</div>
+
+<div
+ class="mode"
+ data-mode="schedule"
+>
+⏰ Schedule
+</div>
+
+</div>
+
+<div
+ id="scheduleBox"
+ class="schedule-box"
+>
+
+<div class="row">
+
+<div>
+
+<label>Date</label>
+
+<input
+ id="scheduleDate"
+ type="date"
+>
+
+</div>
+
+<div>
+
+<label>Time</label>
+
+<input
+ id="scheduleTime"
+ type="time"
+>
+
+</div>
+
+</div>
+
+<div class="schedule-note">
+
+⏰ Schedule server-side হবে। Request backend-এ পাঠানো হবে এবং backend-কে OneSignal-এর persistent scheduling ব্যবহার করতে হবে। তাই admin/browser বন্ধ থাকলেও notification পাঠানো সম্ভব হবে।
+
+</div>
+
+</div>
+
+<div
+ class="progress"
+ id="progress"
+>
+
+<div class="progress-track">
+
+<div
+ class="progress-bar"
+ id="progressBar"
+></div>
+
+</div>
+
+<div
+ class="progress-text"
+ id="progressText"
+>
+Preparing...
+</div>
+
+</div>
+
+<button
+ id="sendBtn"
+ type="button"
+>
+SEND NOTIFICATION
+</button>
+
+<div
+ id="result"
+ class="status"
+></div>
+<div class="card">
+  <div class="section-title">
+    🔔 Automatic Transaction Notifications
+  </div>
+
+  <p style="font-size:12px;color:#94a3b8;line-height:1.7">
+    Firestore transactions collection-এ নতুন transaction তৈরি
+    হলে backend সংশ্লিষ্ট userId-তে amount, gateway এবং status
+    সহ push notification পাঠানোর চেষ্টা করবে।
+  </p>
+
+  <button
+    id="checkTransactionStatusBtn"
+    type="button"
+    class="btn-secondary"
+    style="width:100%;margin-top:12px"
+  >
+    CHECK AUTOMATION STATUS
+  </button>
+
+  <div id="transactionStatus" class="status"></div>
+</div>
+</div>
+
+
+<!-- HISTORY -->
+
+<div class="card">
+
+<div class="section-title history-toggle-wrap">
+
+<span>
+📋 Notification History
+<span
+ id="historyToggleCount"
+ class="history-count-badge"
+>
+0
+</span>
+</span>
+
+<button
+ id="historyToggleBtn"
+ class="btn-secondary small-btn"
+ type="button"
+>
+📋 VIEW HISTORY
+</button>
+
+</div>
+
+<div
+ id="historyPanel"
+ class="history-panel"
+>
+
+<div class="history-tools">
+
+<input
+ id="historySearch"
+ type="search"
+ placeholder="🔍 Search history..."
+>
+
+<select id="historyFilter">
+
+<option value="all">
+All Status
+</option>
+
+<option value="success">
+Success
+</option>
+
+<option value="failed">
+Failed
+</option>
+
+<option value="scheduled">
+Scheduled
+</option>
+
+</select>
+
+</div>
+
+<div
+ style="display:flex;justify-content:flex-end;margin-bottom:8px"
+>
+
+<button
+ id="clearHistoryBtn"
+ class="btn-red small-btn"
+ type="button"
+>
+CLEAR HISTORY
+</button>
+
+</div>
+
+<div
+ id="history"
+ class="history"
+></div>
+
+</div>
+
+</div>
+
+
+<div class="footer">
+TAHMID JOD • Notification Management Center
+</div>
+
+</div>
+
+
+<div
+ id="popup"
+ class="popup"
+></div>
+
+
+<script>
+"use strict";
+
+
+/* =========================================================
+   CONFIG
+========================================================= */
+const API_TRANSACTION_STATUS =
+  "/api/transactions/notification-status";
+
+const DEFAULT_ICON =
+"https://videotourl.com/images/1791731746074-18b920d8-818a-422d-98b7-941333ef35c9.jpg";
+
+const DEFAULT_URL =
+"https://tahmid-jod.web.app";
+
+const API_SEND =
+"/api/notifications/send";
+
+const API_CHECK =
+"/api/notifications/check-user";
+
+const HISTORY_KEY =
+"aura_notification_history";
+
+const FAVORITES_KEY =
+"aura_notification_favorites";
+
+const DRAFT_KEY =
+"aura_notification_draft";
+
+
+/* =========================================================
+   ELEMENT HELPER
+========================================================= */
+
+const $ = id =>
+document.getElementById(id);
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const externalId =
+$("externalId");
+
+const template =
+$("template");
+
+const templateSearch =
+$("templateSearch");
+
+const templateFields =
+$("templateFields");
+
+const favoriteBtn =
+$("favoriteBtn");
+
+const message =
+$("message");
+
+const icon =
+$("icon");
+
+const image =
+$("image");
+
+const url =
+$("url");
+
+const sendBtn =
+$("sendBtn");
+
+const result =
+$("result");
+
+const progress =
+$("progress");
+
+const progressBar =
+$("progressBar");
+
+const progressText =
+$("progressText");
+
+const historyBox =
+$("history");
+
+const historySearch =
+$("historySearch");
+
+const historyFilter =
+$("historyFilter");
+
+const userStatus =
+$("userStatus");
+
+const specificBox =
+$("specificBox");
+
+const historyPanel =
+$("historyPanel");
+
+const historyToggleBtn =
+$("historyToggleBtn");
+
+const historyToggleCount =
+$("historyToggleCount");
+
+const targetInputs =
+document.querySelectorAll(
+ 'input[name="target"]'
+);
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let sendMode = "now";
+
+let currentTemplate = "";
+
+let historyData;
+
+try{
+
+ historyData =
+  JSON.parse(
+   localStorage.getItem(HISTORY_KEY) || "[]"
+  );
+
+ if(!Array.isArray(historyData)){
+  historyData=[];
+ }
+
+}catch{
+
+ historyData=[];
+}
+
+
+let favorites;
+
+try{
+
+ favorites =
+  JSON.parse(
+   localStorage.getItem(FAVORITES_KEY) || "[]"
+  );
+
+ if(!Array.isArray(favorites)){
+  favorites=[];
+ }
+
+}catch{
+
+ favorites=[];
+}
+
+
+/* =========================================================
+   TEMPLATES
+========================================================= */
+
+const templates = {
+
+deposit_approve:{
+ name:"📥 ডিপোজিট অনুমোদন",
+ fields:["amount","name"],
+ msg:a=>`✅ প্রিয় ${a.name||"{name}"}, আপনার ${money(a.amount||"0")} ডিপোজিট সফলভাবে অনুমোদন করা হয়েছে। আপনার TAHMID JOD অ্যাকাউন্টে টাকা যোগ হয়েছে।`
+},
+
+deposit_reject:{
+ name:"❌ ডিপোজিট বাতিল",
+ fields:["amount","reason","name"],
+ msg:a=>`❌ প্রিয় ${a.name||"{name}"}, আপনার ${money(a.amount||"0")} ডিপোজিটটি বাতিল করা হয়েছে।${a.reason?` কারণ: ${a.reason}`:""}`
+},
+
+withdraw_approve:{
+ name:"📤 উইথড্র অনুমোদন",
+ fields:["amount","name"],
+ msg:a=>`✅ প্রিয় ${a.name||"{name}"}, আপনার ${money(a.amount||"0")} উইথড্র সফলভাবে অনুমোদন করা হয়েছে।`
+},
+
+withdraw_reject:{
+ name:"❌ উইথড্র বাতিল",
+ fields:["amount","reason","name"],
+ msg:a=>`❌ প্রিয় ${a.name||"{name}"}, আপনার ${money(a.amount||"0")} উইথড্র অনুরোধটি বাতিল করা হয়েছে।${a.reason?` কারণ: ${a.reason}`:""}`
+},
+
+bonus:{
+ name:"💰 বোনাস যোগ",
+ fields:["amount","name"],
+ msg:a=>`🎁 প্রিয় ${a.name||"{name}"}, আপনার অ্যাকাউন্টে ${money(a.amount||"0")} বোনাস যোগ করা হয়েছে।`
+},
+
+reward:{
+ name:"🎁 রিওয়ার্ড যোগ",
+ fields:["reward","name"],
+ msg:a=>`🎁 অভিনন্দন ${a.name||"{name}"}! আপনি ${a.reward||"বিশেষ রিওয়ার্ড"} পেয়েছেন।`
+},
+
+tournament_win:{
+ name:"🏆 টুর্নামেন্ট জিতেছেন",
+ fields:["amount","tournament","name"],
+ msg:a=>`🏆 অভিনন্দন ${a.name||"{name}"}! আপনি ${a.tournament||"টুর্নামেন্ট"}-এ জয়ী হয়েছেন এবং ${money(a.amount||"0")} পুরস্কার পেয়েছেন।`
+},
+
+match_start:{
+ name:"🎮 টুর্নামেন্ট শুরু",
+ fields:["tournament","time"],
+ msg:a=>`🎮 ${a.tournament||"টুর্নামেন্ট"} শুরু হবে ${a.time||"শীঘ্রই"}। প্রস্তুত থাকুন!`
+},
+
+new_tournament:{
+ name:"📢 নতুন টুর্নামেন্ট",
+ fields:["tournament","entry","prize","time"],
+ msg:a=>`📢 নতুন টুর্নামেন্ট: ${a.tournament||"নতুন টুর্নামেন্ট"} | Entry Fee: ${a.entry?money(a.entry):"Free"}${a.prize?` | Prize: ${money(a.prize)}`:""}${a.time?` | Time: ${a.time}`:""}। এখনই রেজিস্ট্রেশন করুন!`
+},
+
+tournament_cancel:{
+ name:"⚠️ টুর্নামেন্ট বাতিল",
+ fields:["tournament","reason"],
+ msg:a=>`⚠️ ${a.tournament||"টুর্নামেন্ট"} বাতিল করা হয়েছে।${a.reason?` কারণ: ${a.reason}`:""}`
+},
+
+account_update:{
+ name:"⚠️ অ্যাকাউন্ট আপডেট",
+ fields:["text","name"],
+ msg:a=>`⚠️ প্রিয় ${a.name||"{name}"}, আপনার অ্যাকাউন্টে গুরুত্বপূর্ণ আপডেট রয়েছে। ${a.text||"দয়া করে অ্যাকাউন্টটি চেক করুন।"}`
+},
+
+congratulations:{
+ name:"🎉 অভিনন্দন",
+ fields:["text","name"],
+ msg:a=>`🎉 অভিনন্দন ${a.name||"{name}"}! ${a.text||"আপনার জন্য একটি বিশেষ শুভেচ্ছা রইল।"}`
+},
+
+announcement:{
+ name:"📢 সবার জন্য ঘোষণা",
+ fields:["text"],
+ msg:a=>`📢 ঘোষণা: ${a.text||"গুরুত্বপূর্ণ ঘোষণা রয়েছে।"}`
+},
+
+new_update:{
+ name:"🔥 নতুন আপডেট",
+ fields:["text"],
+ msg:a=>`🔥 নতুন আপডেট: ${a.text||"নতুন কিছু এসেছে! অ্যাপটি চেক করুন।"}`
+},
+
+urgent:{
+ name:"🚨 জরুরি ঘোষণা",
+ fields:["text"],
+ msg:a=>`🚨 জরুরি ঘোষণা: ${a.text||"দয়া করে সর্বশেষ নির্দেশনা অনুসরণ করুন।"}`
+},
+
+offer:{
+ name:"🎁 বিশেষ অফার",
+ fields:["text"],
+ msg:a=>`🎁 বিশেষ অফার! ${a.text||"আজকের বিশেষ অফারটি মিস করবেন না।"}`
+},
+
+notice:{
+ name:"📣 গুরুত্বপূর্ণ নোটিশ",
+ fields:["text"],
+ msg:a=>`📣 গুরুত্বপূর্ণ নোটিশ: ${a.text||"দয়া করে নোটিশটি দেখে নিন।"}`
+},
+
+welcome:{
+ name:"👋 স্বাগতম বার্তা",
+ fields:["name"],
+ msg:a=>`👋 TAHMID JOD-এ আপনাকে স্বাগতম${a.name?`, ${a.name}`:""}! আমাদের সাথে থাকুন।`
+},
+
+password_changed:{
+ name:"🔄 পাসওয়ার্ড পরিবর্তন",
+ fields:[],
+ msg:()=>`🔄 আপনার পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে।`
+},
+
+account_warning:{
+ name:"⚠️ অ্যাকাউন্ট সতর্কতা",
+ fields:["reason","name"],
+ msg:a=>`⚠️ ${a.name||"{name}"}, আপনার অ্যাকাউন্ট সম্পর্কে সতর্কতা: ${a.reason||"দয়া করে নিয়ম মেনে চলুন।"}`
+},
+
+birthday:{
+ name:"🎂 জন্মদিনের শুভেচ্ছা",
+ fields:["name"],
+ msg:a=>`🎂 শুভ জন্মদিন${a.name?`, ${a.name}`:""}! TAHMID JOD-এর পক্ষ থেকে অনেক শুভেচ্ছা।`
+},
+
+match_soon:{
+ name:"⏰ ম্যাচ শুরু হতে চলেছে",
+ fields:["tournament","time"],
+ msg:a=>`⏰ ${a.tournament||"ম্যাচ"} শুরু হতে চলেছে${a.time?` — ${a.time}`:""}। প্রস্তুত থাকুন!`
+},
+
+room_info:{
+ name:"📋 রুম ID / Password",
+ fields:["tournament","room","password"],
+ msg:a=>`📋 ${a.tournament||"ম্যাচ"}-এর রুম তথ্য প্রকাশ করা হয়েছে। Room ID: ${a.room||"—"} | Password: ${a.password||"—"}`
+},
+
+match_suspended:{
+ name:"🚫 ম্যাচ স্থগিত",
+ fields:["tournament","reason"],
+ msg:a=>`🚫 ${a.tournament||"ম্যাচ"} স্থগিত করা হয়েছে।${a.reason?` কারণ: ${a.reason}`:""}`
+},
+
+results:{
+ name:"📊 রেজাল্ট প্রকাশ",
+ fields:["tournament"],
+ msg:a=>`📊 ${a.tournament||"টুর্নামেন্ট"}-এর রেজাল্ট প্রকাশ করা হয়েছে। এখনই দেখে নিন!`
+},
+
+prize_distributed:{
+ name:"🏅 পুরস্কার বিতরণ",
+ fields:["amount","name"],
+ msg:a=>`🏅 পুরস্কার বিতরণ সম্পন্ন হয়েছে। ${a.name||"{name}"}, আপনার পুরস্কারের পরিমাণ: ${money(a.amount||"0")}।`
+},
+
+team_update:{
+ name:"👥 স্কোয়াড/টিম আপডেট",
+ fields:["text"],
+ msg:a=>`👥 স্কোয়াড/টিম আপডেট: ${a.text||"আপনার টিম সংক্রান্ত নতুন তথ্য রয়েছে।"}`
+},
+
+cashback:{
+ name:"💎 ক্যাশব্যাক যোগ",
+ fields:["amount","name"],
+ msg:a=>`💎 প্রিয় ${a.name||"{name}"}, আপনার অ্যাকাউন্টে ${money(a.amount||"0")} ক্যাশব্যাক যোগ করা হয়েছে।`
+},
+
+promo_reward:{
+ name:"🎁 প্রোমো কোড রিওয়ার্ড",
+ fields:["amount","code","name"],
+ msg:a=>`🎁 ${a.name||"{name}"}, প্রোমো রিওয়ার্ড!${a.amount?` ${money(a.amount)}`:""}${a.code?` | Code: ${a.code}`:""}`
+},
+
+balance_adjustment:{
+ name:"💸 ব্যালেন্স সমন্বয়",
+ fields:["amount","reason","name"],
+ msg:a=>`💸 ${a.name||"{name}"}, আপনার ব্যালেন্সে ${money(a.amount||"0")} সমন্বয় করা হয়েছে।${a.reason?` কারণ: ${a.reason}`:""}`
+},
+
+winning_prize:{
+ name:"🪙 জয়ী পুরস্কার",
+ fields:["amount","name"],
+ msg:a=>`🪙 অভিনন্দন ${a.name||"{name}"}! আপনার জয়ী পুরস্কার ${money(a.amount||"0")} ব্যালেন্সে যোগ করা হয়েছে।`
+},
+
+maintenance:{
+ name:"🛠️ সিস্টেম মেইনটেন্যান্স",
+ fields:["time","text"],
+ msg:a=>`🛠️ সিস্টেম মেইনটেন্যান্স: ${a.time?`সময়: ${a.time}। `:""}${a.text||"সাময়িকভাবে কিছু সেবা বন্ধ থাকতে পারে।"}`
+},
+
+event:{
+ name:"📅 নতুন ইভেন্ট",
+ fields:["event","date"],
+ msg:a=>`📅 নতুন ইভেন্ট: ${a.event||"বিশেষ ইভেন্ট"}${a.date?` | তারিখ: ${a.date}`:""}।`
+},
+
+campaign:{
+ name:"🔥 বিশেষ ক্যাম্পেইন",
+ fields:["campaign"],
+ msg:a=>`🔥 বিশেষ ক্যাম্পেইন: ${a.campaign||"নতুন ক্যাম্পেইন"}। অংশ নিতে এখনই অ্যাপে আসুন!`
+},
+
+rules_update:{
+ name:"📣 নিয়ম/নীতিমালা আপডেট",
+ fields:["text"],
+ msg:a=>`📣 নিয়ম/নীতিমালা আপডেট: ${a.text||"নতুন নিয়ম প্রকাশ করা হয়েছে।"}`
+},
+
+special_notice:{
+ name:"🌟 বিশেষ নোটিশ",
+ fields:["text"],
+ msg:a=>`🌟 বিশেষ নোটিশ: ${a.text||"আপনার জন্য একটি গুরুত্বপূর্ণ বার্তা রয়েছে।"}`
+}
+
+};
+
+
+/* =========================================================
+   FIELD LABELS
+========================================================= */
+
+const labels={
+
+ amount:"Amount (৳)",
+ reason:"কারণ",
+ reward:"Reward",
+ tournament:"Tournament Name",
+ time:"Match Time",
+ entry:"Entry Fee (৳)",
+ prize:"Prize (৳)",
+ text:"বার্তা",
+ name:"User Name",
+ room:"Room ID",
+ password:"Room Password",
+ code:"Promo Code",
+ event:"Event Name",
+ date:"তারিখ",
+ campaign:"Campaign Name"
+
+};
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function money(value){
+
+ const raw=
+  String(value ?? "")
+   .replace(/[^\d.]/g,"");
+
+ if(!raw)
+  return "৳0";
+
+ const n=Number(raw);
+
+ if(!Number.isFinite(n))
+  return "৳0";
+
+ return "৳"+n.toLocaleString("en-US");
+}
+
+
+function escapeHTML(value){
+
+ return String(value ?? "")
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+}
+
+
+function showStatus(el,text,type="info"){
+
+ el.textContent=text;
+ el.className="status show "+type;
+}
+
+
+function clearStatus(el){
+
+ el.textContent="";
+ el.className="status";
+}
+
+
+function popup(text,type="success"){
+
+ const p=$("popup");
+
+ p.textContent=text;
+ p.className="popup show "+type;
+
+ clearTimeout(p._timer);
+
+ p._timer=setTimeout(()=>{
+  p.className="popup";
+ },3000);
+}
+
+
+function saveHistory(){
+
+ localStorage.setItem(
+  HISTORY_KEY,
+  JSON.stringify(
+   historyData.slice(0,100)
+  )
+ );
+}
+
+
+function saveFavorites(){
+
+ localStorage.setItem(
+  FAVORITES_KEY,
+  JSON.stringify(favorites)
+ );
+}
+
+
+function getFormData(){
+
+ const fields={};
+
+ templateFields
+  .querySelectorAll("[data-field]")
+  .forEach(input=>{
+
+   fields[input.dataset.field]=
+    input.value.trim();
+
+  });
+
+ return fields;
+}
+
+
+function wait(ms){
+
+ return new Promise(
+  resolve=>setTimeout(resolve,ms)
+ );
+}
+
+
+/* =========================================================
+   TEMPLATE LIST
+========================================================= */
+
+function renderTemplateList(){
+
+ const search=
+  templateSearch.value
+   .trim()
+   .toLowerCase();
+
+ const entries=
+  Object.entries(templates)
+   .filter(([key,cfg])=>{
+
+    if(!search)
+     return true;
+
+    return(
+     cfg.name
+      .toLowerCase()
+      .includes(search) ||
+     key
+      .toLowerCase()
+      .includes(search)
+    );
+
+   })
+   .sort((a,b)=>{
+
+    const af=
+     favorites.includes(a[0])
+      ? 0
+      : 1;
+
+    const bf=
+     favorites.includes(b[0])
+      ? 0
+      : 1;
+
+    return af-bf;
+   });
+
+ const selected=
+  currentTemplate ||
+  template.value;
+
+ template.innerHTML=
+  `<option value="">
+   Select a message template
+  </option>`+
+  entries.map(([key,cfg])=>`
+   <option value="${escapeHTML(key)}">
+    ${favorites.includes(key)?"⭐ ":""}${escapeHTML(cfg.name)}
+   </option>
+  `).join("");
+
+ if(
+  selected &&
+  templates[selected] &&
+  entries.some(
+   x=>x[0]===selected
+  )
+ ){
+
+  template.value=selected;
+ }
+
+ updateFavoriteButton();
+}
+
+
+/* =========================================================
+   TEMPLATE FIELDS
+========================================================= */
+
+function renderTemplateFields(){
+
+ const key=
+  template.value;
+
+ currentTemplate=key;
+
+ const cfg=
+  templates[key];
+
+ templateFields.innerHTML="";
+
+ if(!cfg){
+
+  templateFields
+   .classList
+   .remove("show");
+
+  updatePreview();
+
+  return;
+ }
+
+ templateFields
+  .classList
+  .add("show");
+
+ cfg.fields.forEach(field=>{
+
+  const wrap=
+   document.createElement("div");
+
+  wrap.className="field";
+
+  const label=
+   document.createElement("label");
+
+  label.textContent=
+   labels[field] || field;
+
+  const input=
+   document.createElement("input");
+
+  input.type="text";
+
+  input.dataset.field=
+   field;
+
+  input.placeholder=
+   labels[field] || field;
+
+  if(
+   ["amount","entry","prize"]
+    .includes(field)
+  ){
+
+   input.inputMode="decimal";
+  }
+
+  wrap.append(
+   label,
+   input
+  );
+
+  templateFields
+   .appendChild(wrap);
+ });
+
+ updateTemplateMessage();
+ updateFavoriteButton();
+}
+
+
+function updateTemplateMessage(){
+
+ const cfg=
+  templates[template.value];
+
+ if(!cfg)
+  return;
+
+ message.value=
+  cfg.msg(
+   getFormData()
+  );
+
+ $("charCount").textContent=
+  message.value.length;
+
+ updatePreview();
+
+ saveDraft();
+}
+
+
+function updateFavoriteButton(){
+
+ const key=
+  template.value;
+
+ const active=
+  key &&
+  favorites.includes(key);
+
+ favoriteBtn.textContent=
+  active
+   ? "★"
+   : "☆";
+
+ favoriteBtn.classList.toggle(
+  "active",
+  !!active
+ );
+}
+
+
+/* =========================================================
+   TEMPLATE EVENTS
+========================================================= */
+
+template.addEventListener(
+ "change",
+ renderTemplateFields
+);
+
+templateSearch.addEventListener(
+ "input",
+ renderTemplateList
+);
+
+favoriteBtn.addEventListener(
+ "click",
+ ()=>{
+
+  const key=
+   template.value;
+
+  if(!key){
+
+   popup(
+    "আগে একটি template select করুন.",
+    "error"
+   );
+
+   return;
+  }
+
+  if(
+   favorites.includes(key)
+  ){
+
+   favorites=
+    favorites.filter(
+     x=>x!==key
+    );
+
+   popup(
+    "Favorite থেকে remove হয়েছে."
+   );
+
+  }else{
+
+   favorites.unshift(key);
+
+   popup(
+    "⭐ Favorite করা হয়েছে."
+   );
+  }
+
+  saveFavorites();
+
+  renderTemplateList();
+
+  template.value=key;
+
+  updateFavoriteButton();
+ }
+);
+
+
+/* =========================================================
+   TEMPLATE INPUT
+========================================================= */
+
+templateFields.addEventListener(
+ "input",
+ e=>{
+
+  if(
+   !e.target.matches(
+    "[data-field]"
+   )
+  )
+   return;
+
+  const field=
+   e.target.dataset.field;
+
+  if(
+   ["amount","entry","prize"]
+    .includes(field)
+  ){
+
+   e.target.value=
+    e.target.value
+     .replace(/[^\d.]/g,"");
+  }
+
+  updateTemplateMessage();
+ }
+);
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+message.addEventListener(
+ "input",
+ ()=>{
+
+  $("charCount").textContent=
+   message.value.length;
+
+  updatePreview();
+
+  saveDraft();
+ }
+);
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+function updatePreview(){
+
+ $("previewTitle")
+  .textContent=
+  "TAHMID JOD";
+
+ $("previewMessage")
+  .textContent=
+  message.value ||
+  "আপনার notification message এখানে দেখা যাবে।";
+
+ const iconURL=
+  icon.value.trim() ||
+  DEFAULT_ICON;
+
+ $("previewIcon").src=
+  iconURL;
+
+ $("previewSmallIcon").src=
+  iconURL;
+
+ $("previewIcon").onerror=()=>{
+  $("previewIcon").src=
+   DEFAULT_ICON;
+ };
+
+ $("previewSmallIcon").onerror=()=>{
+  $("previewSmallIcon").src=
+   DEFAULT_ICON;
+ };
+
+ const img=
+  image.value.trim();
+
+ if(img){
+
+  $("previewImage").src=
+   img;
+
+  $("previewImage")
+   .style.display=
+   "block";
+
+  $("previewImage").onerror=()=>{
+   $("previewImage")
+    .style.display=
+    "none";
+  };
+
+ }else{
+
+  $("previewImage")
+   .style.display=
+   "none";
+ }
+}
+
+
+[icon,image].forEach(
+ el=>{
+
+  el.addEventListener(
+   "input",
+   ()=>{
+
+    updatePreview();
+    saveDraft();
+
+   }
+  );
+
+ }
+);
+
+
+/* =========================================================
+   TARGET
+========================================================= */
+
+targetInputs.forEach(
+ input=>{
+
+  input.addEventListener(
+   "change",
+   ()=>{
+
+    const specific=
+     document.querySelector(
+      'input[name="target"][value="specific"]'
+     ).checked;
+
+    specificBox.style.display=
+     specific
+      ? "block"
+      : "none";
+
+    if(!specific){
+
+     clearStatus(
+      userStatus
+     );
+    }
+
+    saveDraft();
+   }
+  );
+
+ }
+);
+
+
+/* =========================================================
+   PASTE UID
+========================================================= */
+
+$("pasteUidBtn")
+ .addEventListener(
+  "click",
+  async()=>{
+
+   try{
+
+    const text=
+     await navigator.clipboard
+      .readText();
+
+    if(!text){
+
+     popup(
+      "Clipboard খালি.",
+      "error"
+     );
+
+     return;
+    }
+
+    externalId.value=
+     text.trim();
+
+    saveDraft();
+
+    popup(
+     "📋 Firebase UID paste হয়েছে.",
+     "success"
+    );
+
+   }catch{
+
+    popup(
+     "Clipboard access পাওয়া যায়নি।",
+     "error"
+    );
+   }
+
+  }
+ );
+
+
+/* =========================================================
+   USER CHECK
+========================================================= */
+
+$("checkUserBtn")
+ .addEventListener(
+  "click",
+  async()=>{
+
+   const id=
+    externalId.value.trim();
+
+   if(!id){
+
+    showStatus(
+     userStatus,
+     "❌ Firebase UID দিন.",
+     "error"
+    );
+
+    return;
+   }
+
+   const btn=
+    $("checkUserBtn");
+
+   btn.disabled=true;
+
+   btn.textContent=
+    "CHECKING...";
+
+   try{
+
+    const response=
+     await fetch(
+      API_CHECK,
+      {
+       method:"POST",
+
+       headers:{
+        "Content-Type":
+         "application/json"
+       },
+
+       body:
+        JSON.stringify({
+         externalId:id
+        })
+      }
+     );
+
+    const raw=
+     await response.text();
+
+    let data;
+
+    try{
+
+     data=
+      JSON.parse(raw);
+
+    }catch{
+
+     data={
+      success:false,
+      error:
+       raw ||
+       "Invalid server response."
+     };
+    }
+
+    if(
+     !response.ok ||
+     !data.success
+    ){
+
+     throw new Error(
+      data.error ||
+      "User not found."
+     );
+    }
+
+    if(data.subscribed){
+
+     showStatus(
+      userStatus,
+      "✅ User is subscribed.\nActive subscriptions: "+
+      (
+       data.subscriptionCount ??
+       0
+      ),
+      "success"
+     );
+
+    }else{
+
+     showStatus(
+      userStatus,
+      "⚠️ User exists, but no active push subscription was found.",
+      "error"
+     );
+    }
+
+   }catch(err){
+
+    showStatus(
+     userStatus,
+     "❌ "+
+     (
+      err.message ||
+      "User check failed."
+     ),
+     "error"
+    );
+
+   }finally{
+
+    btn.disabled=false;
+
+    btn.textContent=
+     "CHECK USER";
+   }
+
+  }
+ );
+
+
+$("clearUserBtn")
+ .addEventListener(
+  "click",
+  ()=>{
+
+   externalId.value="";
+
+   clearStatus(
+    userStatus
+   );
+
+   externalId.focus();
+
+   saveDraft();
+  }
+ );
+
+
+/* =========================================================
+   SEND MODE
+   IMPORTANT:
+   Existing Schedule logic kept unchanged.
+========================================================= */
+
+document
+ .querySelectorAll(".mode")
+ .forEach(mode=>{
+
+  mode.addEventListener(
+   "click",
+   ()=>{
+
+    document
+     .querySelectorAll(".mode")
+     .forEach(x=>
+      x.classList.remove(
+       "active"
+      )
+     );
+
+    mode.classList.add(
+     "active"
+    );
+
+    sendMode=
+     mode.dataset.mode;
+
+    $("scheduleBox")
+     .classList.toggle(
+      "show",
+      sendMode==="schedule"
+     );
+
+    saveDraft();
+   }
+  );
+
+ });
+
+
+/* =========================================================
+   DEFAULT SCHEDULE
+   UNCHANGED
+========================================================= */
+
+function setDefaultSchedule(){
+
+ const now=
+  new Date();
+
+ now.setMinutes(
+  now.getMinutes()+10
+ );
+
+ const year=
+  now.getFullYear();
+
+ const month=
+  String(
+   now.getMonth()+1
+  ).padStart(2,"0");
+
+ const day=
+  String(
+   now.getDate()
+  ).padStart(2,"0");
+
+ $("scheduleDate").value=
+  `${year}-${month}-${day}`;
+
+ $("scheduleTime").value=
+  now
+   .toTimeString()
+   .slice(0,5);
+}
+
+
+/* =========================================================
+   BUILD PAYLOAD
+   Sound fields removed only.
+   Schedule logic unchanged.
+========================================================= */
+
+function buildPayload(){
+
+ const target=
+  document.querySelector(
+   'input[name="target"]:checked'
+  )?.value ||
+  "all";
+
+ let scheduledAt=null;
+
+ if(sendMode==="schedule"){
+
+  const date=
+   $("scheduleDate").value;
+
+  const time=
+   $("scheduleTime").value;
+
+  if(date && time){
+
+   const localDate=
+    new Date(
+     `${date}T${time}`
+    );
+
+   if(
+    Number.isFinite(
+     localDate.getTime()
+    )
+   ){
+
+    scheduledAt=
+     localDate.toISOString();
+   }
+  }
+ }
+
+ return{
+
+  target,
+
+  externalId:
+   externalId.value.trim(),
+
+  title:
+   "TAHMID JOD",
+
+  message:
+   message.value.trim(),
+
+  icon:
+   icon.value.trim(),
+
+  image:
+   image.value.trim(),
+
+  url:
+   url.value.trim(),
+
+  template:
+   template.value,
+
+  templateFields:
+   getFormData(),
+
+  scheduledAt,
+
+  timezone:
+   Intl.DateTimeFormat()
+    .resolvedOptions()
+    .timeZone ||
+   "Asia/Dhaka"
+ };
+}
+
+
+/* =========================================================
+   SEND BUTTON
+   Schedule validation unchanged.
+========================================================= */
+
+sendBtn.addEventListener(
+ "click",
+ async()=>{
+
+  if(sendBtn.disabled)
+   return;
+
+  const payload=
+   buildPayload();
+
+  if(!payload.message){
+
+   popup(
+    "Notification message লিখুন.",
+    "error"
+   );
+
+   message.focus();
+
+   return;
+  }
+
+  if(
+   payload.target==="specific" &&
+   !payload.externalId
+  ){
+
+   popup(
+    "Specific User-এর জন্য Firebase UID দিন.",
+    "error"
+   );
+
+   externalId.focus();
+
+   return;
+  }
+
+  if(
+   sendMode==="schedule"
+  ){
+
+   if(
+    !$("scheduleDate").value ||
+    !$("scheduleTime").value
+   ){
+
+    popup(
+     "Schedule date এবং time দিন.",
+     "error"
+    );
+
+    return;
+   }
+
+   if(!payload.scheduledAt){
+
+    popup(
+     "সঠিক date/time নির্বাচন করুন.",
+     "error"
+    );
+
+    return;
+   }
+
+   const scheduledDate=
+    new Date(
+     payload.scheduledAt
+    );
+
+   if(
+    !Number.isFinite(
+     scheduledDate.getTime()
+    ) ||
+    scheduledDate.getTime()<=
+     Date.now()
+   ){
+
+    popup(
+     "Future date/time নির্বাচন করুন.",
+     "error"
+    );
+
+    return;
+   }
+  }
+
+  await sendNotification(
+   payload
+  );
+
+ });
+
+
+/* =========================================================
+   SEND
+========================================================= */
+
+async function sendNotification(
+ payload
+){
+
+ sendBtn.disabled=true;
+
+ sendBtn.textContent=
+  payload.scheduledAt
+   ? "SCHEDULING..."
+   : "SENDING...";
+
+ progress.classList.add(
+  "show"
+ );
+
+ setProgress(
+  15,
+  payload.scheduledAt
+   ? "Schedule প্রস্তুত করা হচ্ছে..."
+   : "Notification প্রস্তুত করা হচ্ছে..."
+ );
+
+ try{
+
+  await wait(150);
+
+  setProgress(
+   45,
+   payload.scheduledAt
+    ? "Server-এ schedule পাঠানো হচ্ছে..."
+    : "Notification পাঠানো হচ্ছে..."
+  );
+
+  const response=
+   await fetch(
+    API_SEND,
+    {
+     method:"POST",
+
+     headers:{
+      "Content-Type":
+       "application/json"
+     },
+
+     body:
+      JSON.stringify(payload)
+    }
+   );
+
+  const raw=
+   await response.text();
+
+  let data;
+
+  try{
+
+   data=
+    JSON.parse(raw);
+
+  }catch{
+
+   data={
+    success:false,
+    error:
+     raw ||
+     "Invalid server response."
+   };
+  }
+
+  if(
+   !response.ok ||
+   !data.success
+  ){
+
+   let error=
+    data.error ||
+    "Notification sending failed.";
+
+   if(
+    data.onesignal &&
+    Array.isArray(
+     data.onesignal.errors
+    )
+   ){
+
+    error+=
+     "\n\nOneSignal: "+
+     data.onesignal.errors
+      .join(", ");
+   }
+
+   throw new Error(
+    error
+   );
+  }
+
+  const scheduled=
+   Boolean(
+    data.scheduled ||
+    data.status==="scheduled"
+   );
+
+  setProgress(
+   100,
+   scheduled
+    ? "Schedule সফল হয়েছে"
+    : "Notification sent"
+  );
+
+  const record={
+
+   id:
+    Date.now().toString(),
+
+   ...payload,
+
+   status:
+    scheduled
+     ? "scheduled"
+     : "success",
+
+   createdAt:
+    new Date().toISOString(),
+
+   serverScheduledAt:
+    data.scheduledAt ||
+    payload.scheduledAt ||
+    null,
+
+   response:
+    data.onesignal ||
+    data
+  };
+
+  historyData.unshift(
+   record
+  );
+
+  historyData=
+   historyData.slice(
+    0,
+    100
+   );
+
+  saveHistory();
+
+  renderHistory();
+
+  updateStats();
+
+  if(scheduled){
+
+   const serverTime=
+    data.scheduledAt ||
+    payload.scheduledAt;
+
+   showStatus(
+    result,
+    "⏰ Notification successfully scheduled!\n\n"+
+    "Scheduled time: "+
+    new Date(
+     serverTime
+    ).toLocaleString()+
+    "\n\nAdmin panel/browser বন্ধ থাকলেও server-side schedule অনুযায়ী পাঠানো হবে.",
+    "success"
+   );
+
+   popup(
+    "⏰ Notification scheduled!",
+    "success"
+   );
+
+  }else{
+
+   showStatus(
+    result,
+    "✅ Notification sent successfully!\n\n"+
+    formatSendResult(data),
+    "success"
+   );
+
+   popup(
+    "🔔 Notification successfully sent!",
+    "success"
+   );
+  }
+
+ }catch(err){
+
+  setProgress(
+   100,
+   "Failed"
+  );
+
+  historyData.unshift({
+
+   id:
+    Date.now().toString(),
+
+   ...payload,
+
+   status:"failed",
+
+   createdAt:
+    new Date().toISOString(),
+
+   error:
+    err.message ||
+    "Something went wrong."
+  });
+
+  historyData=
+   historyData.slice(
+    0,
+    100
+   );
+
+  saveHistory();
+
+  renderHistory();
+
+  updateStats();
+
+  showStatus(
+   result,
+   "❌ Notification failed\n\n"+
+   (
+    err.message ||
+    "Something went wrong."
+   ),
+   "error"
+  );
+
+  popup(
+   "Notification failed.",
+   "error"
+  );
+
+ }finally{
+
+  setTimeout(()=>{
+   progress.classList.remove(
+    "show"
+   );
+  },1000);
+
+  sendBtn.disabled=false;
+
+  sendBtn.textContent=
+   "SEND NOTIFICATION";
+ }
+}
+
+
+/* =========================================================
+   RESULT FORMAT
+========================================================= */
+
+function formatSendResult(data){
+
+ const o=
+  data.onesignal ||
+  data;
+
+ const parts=[];
+
+ if(o.recipients!=null)
+  parts.push(
+   "Recipients: "+
+   o.recipients
+  );
+
+ if(o.successful!=null)
+  parts.push(
+   "Successful: "+
+   o.successful
+  );
+
+ if(o.failed!=null)
+  parts.push(
+   "Failed: "+
+   o.failed
+  );
+
+ if(o.notSubscribed!=null)
+  parts.push(
+   "Not subscribed: "+
+   o.notSubscribed
+  );
+
+ return parts.length
+  ? parts.join("\n")
+  : JSON.stringify(
+     o,
+     null,
+     2
+    );
+}
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+function setProgress(
+ percent,
+ text
+){
+
+ progressBar.style.width=
+  percent+"%";
+
+ progressText.textContent=
+  text;
+}
+
+
+/* =========================================================
+   HISTORY TOGGLE
+========================================================= */
+
+historyToggleBtn.addEventListener(
+ "click",
+ ()=>{
+
+  const opened=
+   historyPanel.classList.toggle(
+    "show"
+   );
+
+  if(opened){
+
+   historyToggleBtn.textContent=
+    "✕ CLOSE HISTORY";
+
+   renderHistory();
+
+  }else{
+
+   historyToggleBtn.textContent=
+    "📋 VIEW HISTORY";
+  }
+ }
+);
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+function renderHistory(){
+
+ const search=
+  historySearch.value
+   .trim()
+   .toLowerCase();
+
+ const filter=
+  historyFilter.value;
+
+ const list=
+  historyData.filter(
+   item=>{
+
+    const text=
+     JSON.stringify(
+      item
+     ).toLowerCase();
+
+    const matchSearch=
+     !search ||
+     text.includes(search);
+
+    const matchFilter=
+     filter==="all" ||
+     item.status===filter;
+
+    return(
+     matchSearch &&
+     matchFilter
+    );
+   }
+  );
+
+ if(!list.length){
+
+  historyBox.innerHTML=
+   `<div class="empty">
+    📭 No notification history found.
+   </div>`;
+
+  return;
+ }
+
+ historyBox.innerHTML=
+  list.map(
+   item=>{
+
+    const cfg=
+     templates[item.template];
+
+    const statusClass=
+     item.status==="success"
+      ? "success"
+      : item.status==="failed"
+      ? "failed"
+      : "scheduled";
+
+    const statusText=
+     item.status==="success"
+      ? "SUCCESS"
+      : item.status==="failed"
+      ? "FAILED"
+      : "SCHEDULED";
+
+    const targetText=
+     item.target==="specific"
+      ? `Specific: ${escapeHTML(item.externalId || "UID")}`
+      : "All Users";
+
+    const rawTime=
+     item.serverScheduledAt ||
+     item.scheduledAt ||
+     item.createdAt;
+
+    const time=
+     rawTime
+      ? new Date(
+         rawTime
+        ).toLocaleString()
+      : "Unknown";
+
+    return `
+
+<div class="history-item">
+
+<div class="history-main">
+
+<div>
+
+<div class="history-title">
+${escapeHTML(
+ cfg?.name ||
+ "Custom Notification"
+)}
+</div>
+
+<div class="history-meta">
+${targetText} • ${escapeHTML(time)}
+</div>
+
+</div>
+
+<span class="badge ${statusClass}">
+${statusText}
+</span>
+
+</div>
+
+<div class="history-msg">
+${escapeHTML(
+ item.message
+)}
+</div>
+
+<div class="history-actions">
+
+<button
+ class="btn-secondary"
+ data-action="resend"
+ data-id="${escapeHTML(item.id)}"
+ type="button"
+>
+🔁 RESEND
+</button>
+
+<button
+ class="btn-secondary"
+ data-action="copy"
+ data-id="${escapeHTML(item.id)}"
+ type="button"
+>
+📋 COPY
+</button>
+
+<button
+ class="btn-red"
+ data-action="delete"
+ data-id="${escapeHTML(item.id)}"
+ type="button"
+>
+🗑️
+</button>
+
+</div>
+
+</div>
+
+`;
+   }
+  ).join("");
+}
+
+
+/* =========================================================
+   HISTORY ACTIONS
+========================================================= */
+
+historyBox.addEventListener(
+ "click",
+ async e=>{
+
+  const btn=
+   e.target.closest(
+    "button[data-action]"
+   );
+
+  if(!btn)
+   return;
+
+  const id=
+   btn.dataset.id;
+
+  const item=
+   historyData.find(
+    x=>
+     String(x.id)===
+     String(id)
+   );
+
+  if(!item)
+   return;
+
+  const action=
+   btn.dataset.action;
+
+  if(action==="delete"){
+
+   historyData=
+    historyData.filter(
+     x=>
+      String(x.id)!==
+      String(id)
+    );
+
+   saveHistory();
+
+   renderHistory();
+
+   updateStats();
+
+   return;
+  }
+
+  if(action==="copy"){
+
+   try{
+
+    await navigator.clipboard
+     .writeText(
+      item.message || ""
+     );
+
+    popup(
+     "📋 Message copied.",
+     "success"
+    );
+
+   }catch{
+
+    popup(
+     "Copy করা যায়নি.",
+     "error"
+    );
+   }
+
+   return;
+  }
+
+  if(action==="resend"){
+
+   restoreHistory(
+    item
+   );
+  }
+ });
+
+
+/* =========================================================
+   RESTORE HISTORY
+========================================================= */
+
+function restoreHistory(
+ item
+){
+
+ if(
+  item.template &&
+  templates[item.template]
+ ){
+
+  template.value=
+   item.template;
+
+  renderTemplateFields();
+
+  Object.entries(
+   item.templateFields || {}
+  ).forEach(
+   ([key,value])=>{
+
+    const field=
+     Array.from(
+      templateFields
+       .querySelectorAll(
+        "[data-field]"
+       )
+     ).find(
+      el=>
+       el.dataset.field===
+       key
+     );
+
+    if(field)
+     field.value=
+      value;
+   }
+  );
+ }
+
+ externalId.value=
+  item.externalId || "";
+
+ message.value=
+  item.message || "";
+
+ icon.value=
+  item.icon ||
+  DEFAULT_ICON;
+
+ image.value=
+  item.image || "";
+
+ url.value=
+  item.url ||
+  DEFAULT_URL;
+
+ const radio=
+  document.querySelector(
+   `input[name="target"][value="${item.target || "all"}"]`
+  );
+
+ if(radio){
+
+  radio.checked=true;
+
+  radio.dispatchEvent(
+   new Event("change")
+  );
+ }
+
+ $("charCount").textContent=
+  message.value.length;
+
+ updatePreview();
+
+ saveDraft();
+
+ window.scrollTo({
+  top:0,
+  behavior:"smooth"
+ });
+
+ popup(
+  "🔁 Notification form restore হয়েছে.",
+  "success"
+ );
+}
+
+
+/* =========================================================
+   HISTORY CONTROLS
+========================================================= */
+
+historySearch.addEventListener(
+ "input",
+ renderHistory
+);
+
+historyFilter.addEventListener(
+ "change",
+ renderHistory
+);
+
+$("clearHistoryBtn")
+ .addEventListener(
+  "click",
+  ()=>{
+
+   if(!historyData.length)
+    return;
+
+   if(
+    confirm(
+     "সব notification history clear করবেন?"
+    )
+   ){
+
+    historyData=[];
+
+    saveHistory();
+
+    renderHistory();
+
+    updateStats();
+
+    popup(
+     "History cleared.",
+     "success"
+    );
+   }
+  }
+);
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function updateStats(){
+
+ const today=
+  new Date().toDateString();
+
+ const sentToday=
+  historyData.filter(
+   item=>
+    item.status==="success" &&
+    new Date(
+     item.createdAt
+    ).toDateString()===
+    today
+  ).length;
+
+ const scheduled=
+  historyData.filter(
+   item=>
+    item.status==="scheduled"
+  ).length;
+
+ $("todaySent").textContent=
+  sentToday;
+
+ $("scheduledCount").textContent=
+  scheduled;
+
+ $("historyCount").textContent=
+  historyData.length;
+
+ historyToggleCount.textContent=
+  historyData.length;
+}
+
+
+/* =========================================================
+   DRAFT
+========================================================= */
+
+function saveDraft(){
+
+ const draft={
+
+  target:
+   document.querySelector(
+    'input[name="target"]:checked'
+   )?.value ||
+   "all",
+
+  externalId:
+   externalId.value,
+
+  template:
+   template.value,
+
+  message:
+   message.value,
+
+  icon:
+   icon.value,
+
+  image:
+   image.value,
+
+  url:
+   url.value
+ };
+
+ localStorage.setItem(
+  DRAFT_KEY,
+  JSON.stringify(draft)
+ );
+}
+
+
+function loadDraft(){
+
+ try{
+
+  const draft=
+   JSON.parse(
+    localStorage.getItem(
+     DRAFT_KEY
+    ) || "null"
+   );
+
+  if(!draft)
+   return;
+
+  if(draft.target){
+
+   const radio=
+    document.querySelector(
+     `input[name="target"][value="${draft.target}"]`
+    );
+
+   if(radio){
+
+    radio.checked=true;
+
+    radio.dispatchEvent(
+     new Event("change")
+    );
+   }
+  }
+
+  externalId.value=
+   draft.externalId || "";
+
+  if(
+   draft.template &&
+   templates[draft.template]
+  ){
+
+   currentTemplate=
+    draft.template;
+
+   template.value=
+    draft.template;
+
+   renderTemplateFields();
+  }
+
+  /*
+   Draft message-কে template-generated message
+   দিয়ে overwrite না করার জন্য শেষে restore করছি।
+  */
+
+  message.value=
+   draft.message || "";
+
+  icon.value=
+   draft.icon ||
+   DEFAULT_ICON;
+
+  image.value=
+   draft.image || "";
+
+  url.value=
+   draft.url ||
+   DEFAULT_URL;
+
+  $("charCount").textContent=
+   message.value.length;
+
+  updatePreview();
+
+ }catch(err){
+
+  console.warn(
+   "Draft load failed:",
+   err
+  );
+ }
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+$("resetBtn")
+ .addEventListener(
+  "click",
+  ()=>{
+
+   if(
+    !confirm(
+     "Form reset করবেন?"
+    )
+   ){
+
+    return;
+   }
+
+   externalId.value="";
+
+   template.value="";
+
+   currentTemplate="";
+
+   templateFields.innerHTML="";
+
+   templateFields
+    .classList
+    .remove("show");
+
+   message.value="";
+
+   icon.value=
+    DEFAULT_ICON;
+
+   image.value="";
+
+   url.value=
+    DEFAULT_URL;
+
+   document.querySelector(
+    'input[name="target"][value="all"]'
+   ).checked=true;
+
+   specificBox.style.display=
+    "none";
+
+   sendMode="now";
+
+   document
+    .querySelectorAll(".mode")
+    .forEach(x=>{
+
+     x.classList.toggle(
+      "active",
+      x.dataset.mode==="now"
+     );
+
+    });
+
+   $("scheduleBox")
+    .classList
+    .remove("show");
+
+   $("charCount").textContent=
+    "0";
+
+   clearStatus(
+    userStatus
+   );
+
+   clearStatus(
+    result
+   );
+
+   setDefaultSchedule();
+
+   updatePreview();
+
+   localStorage.removeItem(
+    DRAFT_KEY
+   );
+
+   popup(
+    "🧹 Form reset হয়েছে.",
+    "success"
+   );
+  }
+);
+
+
+/* =========================================================
+   AUTO DRAFT
+========================================================= */
+
+[
+ externalId,
+ icon,
+ image,
+ url
+].forEach(
+ el=>{
+
+  el.addEventListener(
+   "input",
+   saveDraft
+  );
+
+ }
+);
+
+
+/* =========================================================
+   ENTER UID
+========================================================= */
+
+externalId.addEventListener(
+ "keydown",
+ e=>{
+
+  if(e.key==="Enter"){
+
+   e.preventDefault();
+
+   $("checkUserBtn").click();
+  }
+ });
+/* =========================================================
+   TRANSACTION AUTOMATION STATUS
+========================================================= */
+
+const transactionStatusBtn =
+  $("checkTransactionStatusBtn");
+
+if (transactionStatusBtn) {
+  transactionStatusBtn.addEventListener("click", async () => {
+    const statusElement = $("transactionStatus");
+
+    transactionStatusBtn.disabled = true;
+    transactionStatusBtn.textContent = "CHECKING...";
+
+    try {
+      const response = await fetch(API_TRANSACTION_STATUS, {
+        method: "GET",
+        headers: {
+          Accept: "application/json"
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.error || "Automation status পাওয়া যায়নি।"
+        );
+      }
+
+      showStatus(
+        statusElement,
+        "✅ Backend response:\n" +
+          JSON.stringify(data, null, 2),
+        "success"
+      );
+    } catch (error) {
+      showStatus(
+        statusElement,
+        "❌ " + (error.message || "Request failed."),
+        "error"
+      );
+    } finally {
+      transactionStatusBtn.disabled = false;
+      transactionStatusBtn.textContent =
+        "CHECK AUTOMATION STATUS";
+    }
+  });
+}
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+setDefaultSchedule();
+
+renderTemplateList();
+
+loadDraft();
+
+/*
+ History intentionally hidden on page load.
+ It only opens after clicking VIEW HISTORY.
+*/
+
+historyPanel.classList.remove(
+ "show"
+);
+
+historyToggleBtn.textContent=
+ "📋 VIEW HISTORY";
+
+updateStats();
+
+updatePreview();
+
+$("charCount").textContent=
+ message.value.length;
+
+window.addEventListener(
+ "beforeunload",
+ saveDraft
+);
+
+</script>
+
+</body>
+</html>
