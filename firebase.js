@@ -56,7 +56,7 @@ export const DEFAULT_PROFILE_PHOTO =
 // ============================================================
 
 export const ADMIN_EMAIL =
-    "tahmidjod19@gmail.com";
+    "mehediali11238@gmail.com";
 
 
 // ============================================================
